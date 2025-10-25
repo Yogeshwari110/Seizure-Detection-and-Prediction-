@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroVision AI | Advanced EEG Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --deep-blue: #0a1931;
+            --neural-purple: #6a4c93;
+            --signal-cyan: #00b4d8;
+            --brain-pink: #e63946;
+            --normal-green: #2a9d8f;
+            --preictal-orange: #f4a261;
+            --seizure-red: #e76f51;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #212529;
+            --text-light: #6c757d;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a1931 0%, #1d3557 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+        }
+
+        .neural-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            background-image: 
+                radial-gradient(circle at 20% 30%, var(--signal-cyan) 2px, transparent 2px),
+                radial-gradient(circle at 80% 70%, var(--neural-purple) 2px, transparent 2px),
+                radial-gradient(circle at 40% 80%, var(--brain-pink) 1px, transparent 1px);
+            background-size: 200px 200px, 300px 300px, 150px 150px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            width: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            font-size: 2.8rem;
+            color: var(--signal-cyan);
+            filter: drop-shadow(0 0 10px rgba(0, 180, 216, 0.5));
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, var(--signal-cyan), var(--neural-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--signal-cyan), var(--neural-purple));
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--deep-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title i {
+            font-size: 1.25rem;
+            color: var(--signal-cyan);
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(106, 76, 147, 0.3);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+            background-color: rgba(248, 249, 250, 0.8);
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: var(--neural-purple);
+            background-color: rgba(106, 76, 147, 0.05);
+        }
+
+        .upload-area.active {
+            border-color: var(--signal-cyan);
+            background-color: rgba(0, 180, 216, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: var(--neural-purple);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1);
+            color: var(--signal-cyan);
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--deep-blue);
+            font-weight: 600;
+        }
+
+        .upload-hint {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .file-info {
+            display: none;
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+            align-items: center;
+            gap: 1rem;
+            border-left: 4px solid var(--signal-cyan);
+        }
+
+        .file-info.show {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .file-icon {
+            font-size: 1.8rem;
+            color: var(--signal-cyan);
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--deep-blue);
+        }
+
+        .file-size {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            color: var(--brain-pink);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .remove-file:hover {
+            background: rgba(230, 57, 70, 0.1);
+            transform: scale(1.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--signal-cyan), var(--neural-purple));
+            color: white;
+            box-shadow: 0 4px 15px rgba(106, 76, 147, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(106, 76, 147, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .result-area {
+            display: none;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .result-area.show {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .result-card.normal::before {
+            background: var(--normal-green);
+        }
+
+        .result-card.preictal::before {
+            background: var(--preictal-orange);
+        }
+
+        .result-card.seizure::before {
+            background: var(--seizure-red);
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--deep-blue);
+        }
+
+        .prediction-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-normal {
+            background: rgba(42, 157, 143, 0.15);
+            color: var(--normal-green);
+            border: 2px solid rgba(42, 157, 143, 0.3);
+        }
+
+        .badge-preictal {
+            background: rgba(244, 162, 97, 0.15);
+            color: var(--preictal-orange);
+            border: 2px solid rgba(244, 162, 97, 0.3);
+        }
+
+        .badge-seizure {
+            background: rgba(231, 111, 81, 0.15);
+            color: var(--seizure-red);
+            border: 2px solid rgba(231, 111, 81, 0.3);
+        }
+
+        .confidence-meter {
+            margin: 2rem 0;
+        }
+
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .meter-bar {
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .meter-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meter-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, 0.2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.2) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 20px 20px;
+            animation: move 1s linear infinite;
+        }
+
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: 20px 0; }
+        }
+
+        .fill-normal {
+            background: linear-gradient(90deg, var(--normal-green), #34c9ad);
+        }
+
+        .fill-preictal {
+            background: linear-gradient(90deg, var(--preictal-orange), #f6b86c);
+        }
+
+        .fill-seizure {
+            background: linear-gradient(90deg, var(--seizure-red), #f08c7a);
+        }
+
+        .confidence-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-top: 0.5rem;
+        }
+
+        .normal-value {
+            color: var(--normal-green);
+        }
+
+        .preictal-value {
+            color: var(--preictal-orange);
+        }
+
+        .seizure-value {
+            color: var(--seizure-red);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .neuro-loader {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .neuro-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--signal-cyan);
+            animation: neuroPulse 1.5s infinite ease-in-out;
+        }
+
+        .neuro-dot:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+        .neuro-dot:nth-child(2) { top: 15px; right: 15px; animation-delay: 0.2s; }
+        .neuro-dot:nth-child(3) { top: 50%; right: 0; transform: translateY(-50%); animation-delay: 0.4s; }
+        .neuro-dot:nth-child(4) { bottom: 15px; right: 15px; animation-delay: 0.6s; }
+        .neuro-dot:nth-child(5) { bottom: 0; left: 50%; transform: translateX(-50%); animation-delay: 0.8s; }
+        .neuro-dot:nth-child(6) { bottom: 15px; left: 15px; animation-delay: 1s; }
+        .neuro-dot:nth-child(7) { top: 50%; left: 0; transform: translateY(-50%); animation-delay: 1.2s; }
+        .neuro-dot:nth-child(8) { top: 15px; left: 15px; animation-delay: 1.4s; }
+
+        @keyframes neuroPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+        }
+
+        .info-section {
+            margin-top: 3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: var(--transition);
+            border-top: 4px solid var(--signal-cyan);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+            color: var(--signal-cyan);
+            margin-bottom: 1.2rem;
+        }
+
+        .info-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--deep-blue);
+        }
+
+        .info-text {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-top: 4rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            width: 100%;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 1.8rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .upload-area {
+                padding: 2rem 1.5rem;
+            }
+            
+            .main-content {
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neural-background"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-wave-square logo-icon"></i>
+                <h1>NeuroVision AI</h1>
+            </div>
+            <p class="tagline">Advanced analysis for EEG seizure detection and classification</p>
+        </header>
+
+        <main>
+            <div class="main-content">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-file-waveform"></i> EEG Data Input</h2>
+                    
+                    <div class="upload-area" id="upload-area">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <p class="upload-text">Upload EEG Signal Data</p>
+                        <p class="upload-hint">Drag & drop or click to browse .txt files</p>
+                        <input type="file" id="file-input" accept=".txt">
+                        <button class="btn btn-primary" id="browse-btn" style="margin-top: 1.5rem;">
+                            <i class="fas fa-folder-open"></i> Select File
+                        </button>
+                    </div>
+                    
+                    <div class="file-info" id="file-info">
+                        <i class="fas fa-file-signature file-icon"></i>
+                        <div class="file-details">
+                            <div class="file-name" id="file-name">eeg_signal_data.txt</div>
+                            <div class="file-size" id="file-size">15.2 KB</div>
+                        </div>
+                        <button class="remove-file" id="remove-file">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" id="predict-btn" disabled>
+                        <i class="fas fa-brain"></i> Analyze Neural Patterns
+                    </button>
+                    
+                    <div class="loading" id="loading">
+                        <div class="neuro-loader">
+                            <div class="neuro-dot"></div>
+                            <div class="neuro-dot"></div>
+                            <div class="neuro-dot"></div>
+                            <div class="neuro-dot"></div>
+                            <div class="neuro-dot"></div>
+                            <div class="neuro-dot"></div>
+                            <div class="neuro-dot"></div>
+                            <div class="neuro-dot"></div>
+                        </div>
+                        <p>Processing neural signals. This may take a moment...</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-chart-network"></i> Analysis Results</h2>
+                    
+                    <div class="result-placeholder">
+                        <i class="fas fa-microscope" style="font-size: 4rem; color: #e9ecef; margin-bottom: 1.5rem;"></i>
+                        <h3 style="color: var(--text-light); margin-bottom: 1rem;">Analysis Pending</h3>
+                        <p style="color: var(--text-light); text-align: center;">Upload an EEG file and click "Analyze Neural Patterns" to see results</p>
+                    </div>
+                    
+                    <div class="result-area" id="result-area">
+                        <div class="result-card" id="result-card">
+                            <h3 class="result-title">Neural Activity Classification</h3>
+                            <div class="prediction-badge" id="prediction-badge">
+                                <i class="fas fa-brain"></i>
+                                <span id="prediction-text">Normal</span>
+                            </div>
+                            
+                            <div class="confidence-meter">
+                                <div class="confidence-label">
+                                    <span>Model Confidence</span>
+                                    <span id="confidence-value">85%</span>
+                                </div>
+                                <div class="meter-bar">
+                                    <div class="meter-fill" id="meter-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <p id="result-description" style="margin-top: 1.5rem; line-height: 1.6; color: var(--text-dark);">
+                                The EEG signal appears to be within normal parameters with no signs of seizure activity detected.
+                            </p>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="analyze-another">
+                            <i class="fas fa-redo-alt"></i> Analyze Another File
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h2 class="card-title" style="text-align: center; color: white;"><i class="fas fa-network-wired"></i> How NeuroVision AI Works</h2>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-file-import info-icon"></i>
+                        <h3 class="info-title">Data Acquisition</h3>
+                        <p class="info-text">Upload raw EEG signal data in text format. Our system automatically preprocesses and normalizes the input for analysis.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-project-diagram info-icon"></i>
+                        <h3 class="info-title">Neural Network Analysis</h3>
+                        <p class="info-text">Advanced deep learning models analyze EEG patterns across multiple frequency bands to detect subtle abnormalities.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-chart-bar info-icon"></i>
+                        <h3 class="info-title">Pattern Classification</h3>
+                        <p class="info-text">The system classifies EEG patterns into Normal, Preictal, or Seizure categories with confidence scoring for clinical review.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>NeuroVision AI &copy; 2023 | Precision EEG Analysis Platform</p>
+            <p>For clinical use only. Results should be interpreted by qualified healthcare professionals.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const browseBtn = document.getElementById('browse-btn');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            const removeFile = document.getElementById('remove-file');
+            const predictBtn = document.getElementById('predict-btn');
+            const loading = document.getElementById('loading');
+            const resultArea = document.getElementById('result-area');
+            const resultCard = document.getElementById('result-card');
+            const predictionBadge = document.getElementById('prediction-badge');
+            const predictionText = document.getElementById('prediction-text');
+            const meterFill = document.getElementById('meter-fill');
+            const confidenceValue = document.getElementById('confidence-value');
+            const resultDescription = document.getElementById('result-description');
+            const analyzeAnother = document.getElementById('analyze-another');
+            
+            // Event Listeners
+            browseBtn.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('active');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('active');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('active');
+                
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelect();
+                }
+            });
+            
+            removeFile.addEventListener('click', resetFile);
+            
+            predictBtn.addEventListener('click', analyzeFile);
+            
+            analyzeAnother.addEventListener('click', resetApp);
+            
+            // Functions
+            function handleFileSelect() {
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    
+                    // Validate file type
+                    if (!file.name.toLowerCase().endsWith('.txt')) {
+                        alert('Please select a .txt file with EEG data');
+                        resetFile();
+                        return;
+                    }
+                    
+                    // Display file info
+                    fileName.textContent = file.name;
+                    fileSize.textContent = formatFileSize(file.size);
+                    fileInfo.classList.add('show');
+                    
+                    // Enable predict button
+                    predictBtn.disabled = false;
+                }
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            function resetFile() {
+                fileInput.value = '';
+                fileInfo.classList.remove('show');
+                predictBtn.disabled = true;
+            }
+            
+            function resetApp() {
+                resetFile();
+                resultArea.classList.remove('show');
+            }
+            
+            function analyzeFile() {
+                // Show loading state
+                loading.classList.add('show');
+                predictBtn.disabled = true;
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // Hide loading
+                    loading.classList.remove('show');
+                    
+                    // For demo purposes, generate a random result
+                    const results = [
+                        { 
+                            type: 'Normal', 
+                            confidence: Math.floor(Math.random() * 20) + 75, 
+                            badgeClass: 'badge-normal', 
+                            cardClass: 'normal',
+                            valueClass: 'normal-value',
+                            description: 'The EEG signal demonstrates normal brain activity patterns with no epileptiform discharges detected. All frequency bands appear within expected parameters.' 
+                        },
+                        { 
+                            type: 'Preictal', 
+                            confidence: Math.floor(Math.random() * 25) + 60, 
+                            badgeClass: 'badge-preictal', 
+                            cardClass: 'preictal',
+                            valueClass: 'preictal-value',
+                            description: 'The EEG shows patterns suggestive of a pre-seizure state. Subtle changes in rhythmicity and spike-wave patterns were detected. Continued monitoring is recommended.' 
+                        },
+                        { 
+                            type: 'Seizure', 
+                            confidence: Math.floor(Math.random() * 25) + 70, 
+                            badgeClass: 'badge-seizure', 
+                            cardClass: 'seizure',
+                            valueClass: 'seizure-value',
+                            description: 'The EEG demonstrates clear ictal patterns consistent with seizure activity. Prominent spike-wave discharges and rhythmic oscillations were detected. Immediate clinical review is advised.' 
+                        }
+                    ];
+                    
+                    const randomResult = results[Math.floor(Math.random() * results.length)];
+                    
+                    // Update UI with result
+                    predictionText.textContent = randomResult.type;
+                    predictionBadge.className = `prediction-badge ${randomResult.badgeClass}`;
+                    confidenceValue.textContent = `${randomResult.confidence}%`;
+                    confidenceValue.className = `confidence-value ${randomResult.valueClass}`;
+                    meterFill.style.width = `${randomResult.confidence}%`;
+                    meterFill.className = `meter-fill fill-${randomResult.type.toLowerCase()}`;
+                    resultDescription.textContent = randomResult.description;
+                    resultCard.className = `result-card ${randomResult.cardClass}`;
+                    
+                    // Show result area
+                    resultArea.classList.add('show');
+                }, 2500);
+            }
+        });
+    </script>
+</body>
+</html>
