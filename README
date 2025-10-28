@@ -1,0 +1,163 @@
+# 🧠 Seizure Detection and Prediction
+A seizure is a sudden, uncontrolled burst of electrical activity in the brain that can cause changes in movement, behavior, awareness, or feelings. Repeated seizures are known as epilepsy, a neurological disorder where brain signals become abnormal and overactive.
+
+## 📘 Overview
+This project, **Seizure Detection and Prediction**, aims to automatically **detect and predict epileptic seizures** using EEG (Electroencephalogram) signal data.  
+It leverages **Convolutional Neural Networks (CNN)** to classify brain signals into three categories:
+- **Normal** — Regular brain activity  
+- **Preictal** — The period before a seizure  
+- **Seizure** — During an epileptic seizure  
+
+The system provides **real-time predictions** through a user-friendly **Flask web interface**, allowing users to upload EEG data and receive model predictions with confidence levels.
+
+## 🎯 Objective
+Epileptic seizures are unpredictable and can be life-threatening. This project aims to:
+- Detect seizure patterns from EEG data.
+- Predict seizures before they occur (preictal phase).
+- Provide an interpretable and accessible web-based prediction system.
+
+---
+
+## 🧠 Why CNN (Convolutional Neural Network)?
+EEG signals contain **spatial and temporal patterns** that represent brain activity.  
+CNNs are highly effective at capturing these complex patterns by:
+- Automatically extracting important features from EEG signals.
+- Handling multidimensional input data efficiently.
+- Learning spatial dependencies without manual feature extraction.  
+
+Thus, CNNs help the model achieve **better accuracy** and **generalization** in EEG signal classification.
+
+---
+
+## ⚙️ Tech Stack
+| Component | Technology |
+|------------|-------------|
+| **Frontend** | HTML, CSS |
+| **Backend** | Flask |
+| **Machine Learning** | TensorFlow, Keras |
+| **Data Processing** | NumPy, Pandas |
+| **Model** | CNN (Convolutional Neural Network) |
+| **Scaler** | StandardScaler (for normalization) |
+
+---
+
+## 📂 Project Structure
+```
+Seizure-Detection-and-Prediction/
+│
+├── static/                 # CSS and static assets
+├── templates/              # HTML templates (index.html, result.html)
+├── model/                  # Trained CNN model and scaler files
+├── app.py                  # Flask backend
+├── requirements.txt        # Required Python libraries
+├── README.md               # Project documentation
+└── data/                   # EEG dataset used for training
+```
+## 🔍 Workflow
+
+### 1. **Data Collection**
+- EEG signal data is collected from the **Bonn University dataset**.
+- The dataset includes different brain states: Normal, Preictal, and Seizure.
+
+### 2. **Preprocessing**
+- EEG signals are reshaped and normalized using **StandardScaler**.
+- Noise and irrelevant data are filtered out.
+- Data is split into **training and testing** sets.
+
+### 3. **Model Training**
+- A **CNN model** is built using **TensorFlow/Keras**.
+- The model learns spatial patterns from EEG signals.
+- Training metrics such as accuracy and loss are monitored.
+
+### 4. **Evaluation**
+- The model’s performance is evaluated using accuracy, precision, and confusion matrix.
+- The final model is saved as `.h5` format.
+
+### 5. **Flask Integration**
+- The trained CNN model and scaler are loaded into a **Flask app**.
+- Users can upload EEG data files via the web interface.
+- The app preprocesses input data, runs predictions, and displays results with confidence scores.
+
+### 6. **Web Interface**
+- A clean and responsive **HTML/CSS** frontend allows users to interact with the model.
+- Displays classification results with probability scores.
+
+## 🚀 Installation & Setup
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Yogeshwari110/Seizure-Detection-and-Prediction-.git
+cd Seizure-Detection-and-Prediction-
+```
+
+### 2. Create a virtual environment
+python -m venv venv
+
+
+### 3. Activate the virtual environment
+- **Windows:**
+  ```bash
+  venv\Scripts\activate
+  ```
+- **Mac/Linux:**
+  ```bash
+  source venv/bin/activate
+  ```
+
+### 4. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Run the Flask app
+```bash
+python app.py
+```
+
+### 6. Open in browser
+Navigate to:
+```
+http://127.0.0.1:5000/
+```
+
+---
+
+## 💡 Example Output
+After uploading an EEG file, the system displays:
+- **Predicted Class:** Normal / Preictal / Seizure  
+- **Confidence Score:** Model’s prediction probability
+
+---
+
+## 📈 Results
+- Achieved **high accuracy** in classifying EEG states.  
+- Model effectively identifies **preictal (before seizure)** patterns.  
+- Helps in early warning and improved seizure management.
+
+---
+
+## 📚 Future Enhancements
+- Integrate with real-time EEG monitoring devices.  
+- Add visualization graphs for brainwave patterns.  
+- Deploy on cloud for wider accessibility.  
+- Enhance model using LSTM + CNN hybrid architecture for better temporal understanding.
+
+---
+
+## 🧩 Skills Gained
+- Deep Learning (CNN, TensorFlow, Keras)  
+- Data Preprocessing & Normalization  
+- Flask Web Development  
+- EEG Signal Processing  
+- Model Deployment & Integration  
+
+---
+
+## 🔗 GitHub Repository
+[Seizure Detection and Prediction - GitHub](https://github.com/Yogeshwari110/Seizure-Detection-and-Prediction-.git)
+
+---
+
+## 🏁 Conclusion
+This project demonstrates how **deep learning** and **EEG signal analysis** can be combined to detect and predict seizures effectively.  
+It reflects the potential of **AI in healthcare innovation** and strengthened my understanding of both **machine learning** and **biomedical data analysis**.
